@@ -1,3 +1,8 @@
+.test:
+  only:
+    - external_pull_requests
+    - merge_requests
+
 job1:
   script: 
     - echo "job1"
@@ -5,6 +10,4 @@ job1:
 job2:
   script:
     - echo "job2"
-  only:
-    - external_pull_requests
-    - merge_requests
+  extends: .test
