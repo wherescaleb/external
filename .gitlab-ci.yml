@@ -7,3 +7,4 @@ job2:
     - echo "job2"
   only:
     - external_pull_requests
+    - merge_requests
