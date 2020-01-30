@@ -4,6 +4,6 @@ stages:
   - deploy
 
 include:
-  - local: test.gitlab-ci.yml
-  - local: Build.gitlab-ci.yml
-  - local: Deploy.gitlab-ci.yml
+  - local: config/gitlab/test.gitlab-ci.yml
+  - local: config/gitlab/Build.gitlab-ci.yml
+  - local: config/gitlabDeploy.gitlab-ci.yml
