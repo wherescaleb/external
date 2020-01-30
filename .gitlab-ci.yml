@@ -1,7 +1,8 @@
 stages:
   - test
   - build
-  - deploy
+  - deploy_non_customer
+  - deploy_customer
 
 include:
   - local: config/gitlab/test.gitlab-ci.yml
