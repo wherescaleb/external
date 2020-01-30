@@ -1,14 +1,9 @@
-.test:
-  only:
-    - external_pull_requests
-    - merge_requests
-    - web
+stages:
+  - test
+  - build
+  - deploy
 
-job1:
-  script: 
-    - echo "job1"
-
-job2:
-  script:
-    - echo "job2"
-  extends: .test
+include:
+  - local: test.gitlab-ci.yml
+  - local: Build.gitlab-ci.yml
+  - local: Deploy.gitlab-ci.yml

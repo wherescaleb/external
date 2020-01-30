@@ -1,0 +1,14 @@
+.test:
+  only:
+    - external_pull_requests
+    - merge_requests
+    - web
+
+job1:
+  script:
+    - echo "job1"
+
+job2:
+  script:
+    - echo "job2"
+  extends: .test
