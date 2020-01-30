@@ -1,18 +1,31 @@
-.test:
-  interruptible: true
-  only:
-    - external_pull_requests
-    - merge_requests
+.test_setup:
+  stage: test
 #  except:
 #    - schedules
 #    - master
 #    - wse-master
 #    - salmon-accordion
-job1:
-  script:
-    - echo "job1"
+  only:
+    - external_pull_requests
+    - merge_requests
+    - web
+  retry:
+    max: 2
+    when: runner_system_failure
+  interruptible: true
 
-job2:
+frontend:
+  extends: .test_setup
   script:
-    - echo "job2"
-  extends: .test
+    - echo ""
+
+minitest:
+  extends: .test_setup
+  script:
+    - echo ""
+
+rspec:
+  extends: .test_setup
+  parallel: 10
+  script:
+    - echo ""
