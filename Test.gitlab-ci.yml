@@ -1,4 +1,3 @@
-
 .test:
   only:
     - external_pull_requests
