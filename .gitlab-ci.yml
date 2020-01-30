@@ -2,6 +2,7 @@
   only:
     - external_pull_requests
     - merge_requests
+    - web
 
 job1:
   script: 
