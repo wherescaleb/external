@@ -1,8 +1,13 @@
 .test:
+  interruptible: true
   only:
     - external_pull_requests
     - merge_requests
-
+#  except:
+#    - schedules
+#    - master
+#    - wse-master
+#    - salmon-accordion
 job1:
   script:
     - echo "job1"
