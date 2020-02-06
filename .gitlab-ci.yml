@@ -6,5 +6,5 @@ stages:
 
 include:
   - local: config/gitlab/test.gitlab-ci.yml
-  - local: config/gitlab/Build.gitlab-ci.yml
-  - local: config/gitlab/Deploy.gitlab-ci.yml
+#  - local: config/gitlab/Build.gitlab-ci.yml
+#  - local: config/gitlab/Deploy.gitlab-ci.yml
