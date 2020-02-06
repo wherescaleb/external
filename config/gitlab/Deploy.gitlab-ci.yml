@@ -1,4 +1,144 @@
-job1:
-  script: echo ""
+.base_deploy:
+  tags:
+    - deploy
+  except:
+    - schedules
+  retry:
+    max: 2
+    when: runner_system_failure
+  services:
+    - docker:18-dind
+  variables:
+    DOMAIN_SUFFIX: ""
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_DRIVER: overlay
+  script:
+    - echo ""
+
+# automatic deploy steps for dev environments
+.deploy_non_customer:
+  extends: .base_deploy
+  stage: deploy_non_customer
+  variables:
+    LOGICAL_ENV: staging
+
+# sets up a manual deploy step for prod and PA so those envs don't get triggered
+# automatically
+.deploy_customer:
+  extends: .base_deploy
+  stage: deploy_customer
+  variables:
+    LOGICAL_ENV: production
+  when: manual
   only:
-        - master
+    - master
+    
+deploy_dev_sa:
+  extends: .deploy_non_customer
+  only:
+    - salmon-accordion
+  environment:
+    name: dev-sa
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-west1-b
+    CLOUDSDK_CONTAINER_CLUSTER: us-west
+    CLOUDSDK_CORE_PROJECT: flexe-dev-sa
+    RESOURCE_SUFFIX: -dev-sa
+    LOGICAL_ENV: dev-sa
+    FLEXE_ENV: staging
+    
+deploy_dev_wse:
+  extends: .deploy_non_customer
+  only:
+    - wse-master
+  environment:
+    name: dev-wse
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-west1-a
+    CLOUDSDK_CONTAINER_CLUSTER: us-west
+    CLOUDSDK_CORE_PROJECT: flexe-dev-wse
+    RESOURCE_SUFFIX: -dev-wse
+    LOGICAL_ENV: dev-wse
+    FLEXE_ENV: staging
+    
+deploy_dev_oms:
+  extends: .deploy_non_customer
+  image: gcr.io/flexe-main/deploy-tool:istio-1.3.6
+  only:
+    - master
+    - master-freeze
+  environment:
+    name: dev-oms
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-west1-b
+    CLOUDSDK_CONTAINER_CLUSTER: us-west
+    CLOUDSDK_CORE_PROJECT: flexe-dev-oms
+    RESOURCE_SUFFIX: -dev-oms
+    LOGICAL_ENV: dev-oms
+    FLEXE_ENV: staging
+
+    
+deploy_dev_ci:
+  extends: .deploy_non_customer
+  only:
+    - master
+    - master-freeze
+    - master-cycle-count
+  environment:
+    name: dev-ci
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-west1-b
+    CLOUDSDK_CONTAINER_CLUSTER: us-west
+    CLOUDSDK_CORE_PROJECT: flexe-ci
+    RESOURCE_SUFFIX: -dev-ci
+    LOGICAL_ENV: dev-ci
+    FLEXE_ENV: staging
+
+deploy_staging:
+  extends: .deploy_non_customer
+  only:
+    - master
+    - master-freeze
+  environment:
+    name: staging
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-west1-b
+    CLOUDSDK_CONTAINER_CLUSTER: us-west
+    CLOUDSDK_CORE_PROJECT: flexe-staging
+    RESOURCE_SUFFIX: -staging
+    LOGICAL_ENV: staging
+    FLEXE_ENV: staging
+
+deploy_sandbox:
+  extends: .deploy_customer
+  environment:
+    name: sandbox
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-central1-a
+    CLOUDSDK_CONTAINER_CLUSTER: applications-primary-sandbox
+    CLOUDSDK_CORE_PROJECT: flexe-stable
+    RESOURCE_SUFFIX: -sandbox
+    LOGICAL_ENV: sandbox
+    FLEXE_ENV: sandbox
+    
+deploy_production:
+  extends: .deploy_customer
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-central1-a
+    CLOUDSDK_CONTAINER_CLUSTER: applications-primary
+    CLOUDSDK_CORE_PROJECT: flexe-production
+    RESOURCE_SUFFIX: ""
+    LOGICAL_ENV: production
+    FLEXE_ENV: production
+    
+deploy_production_pa:
+  extends: .deploy_customer
+  variables:
+    CLOUDSDK_COMPUTE_ZONE: us-east1-b
+    CLOUDSDK_CONTAINER_CLUSTER: applications-primary
+    CLOUDSDK_CORE_PROJECT: flexe-production-panama
+    RESOURCE_SUFFIX: -prod-pa
+    DOMAIN_SUFFIX: .pa
+    LOGICAL_ENV: production-panama
+    FLEXE_ENV: production
+
