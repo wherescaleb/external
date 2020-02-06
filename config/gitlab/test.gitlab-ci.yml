@@ -20,7 +20,7 @@ minitest:
     - echo ""
 
 rspec:
-  extends: .test_setup
+#  extends: .test_setup
   parallel: 10
   script:
     - echo ""
