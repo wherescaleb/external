@@ -1,9 +1,9 @@
 .test_setup:
   stage: test
-#  only:
-#    - external_pull_requests
-#    - merge_requests
-#    - web
+  only:
+    - external_pull_requests
+    - merge_requests
+    - web
   retry:
     max: 2
     when: runner_system_failure
