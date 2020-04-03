@@ -1,6 +1,5 @@
 job:
   only:
-    - external_pull_requests
     - master
   script:
     - echo ""
