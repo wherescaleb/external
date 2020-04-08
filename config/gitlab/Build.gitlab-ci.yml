@@ -1,0 +1,21 @@
+docker_build:
+  image: google/cloud-sdk:latest
+  stage: build
+  only:
+    - master
+  except:
+    - schedules
+  retry:
+    max: 2
+    when: runner_system_failure
+  services:
+    - docker:18-dind
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_DRIVER: overlay
+  script:
+    - echo ""
+  artifacts:
+    when: on_success
+    paths:
+      - public/
